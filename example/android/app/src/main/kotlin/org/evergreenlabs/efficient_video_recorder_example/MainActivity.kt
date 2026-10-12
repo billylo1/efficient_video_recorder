@@ -1,0 +1,5 @@
+package org.evergreenlabs.efficient_video_recorder_example
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity : FlutterActivity()
