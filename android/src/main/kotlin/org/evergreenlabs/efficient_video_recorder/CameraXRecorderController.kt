@@ -119,7 +119,6 @@ class CameraXRecorderController(private val activity: Activity) {
         }
 
         preview = previewBuilder.build()
-        surfaceProvider?.let { preview?.setSurfaceProvider(it) }
 
         // 3. Quality & Bitrate Profile
         val (selectedQuality, targetBitrate) = when (currentQuality.lowercase()) {
@@ -157,6 +156,8 @@ class CameraXRecorderController(private val activity: Activity) {
             preview,
             videoCapture
         )
+
+        surfaceProvider?.let { preview?.setSurfaceProvider(it) }
     }
 
     fun startRecording(path: String, result: MethodChannel.Result) {
@@ -274,15 +275,6 @@ class CameraXRecorderController(private val activity: Activity) {
         val rot = if (rotation != null && rotation >= 0) rotation else getSurfaceRotation()
         preview?.targetRotation = rot
         videoCapture?.targetRotation = rot
-        if (isInitialized && activeRecording == null) {
-            try {
-                bindUseCases()
-            } catch (_: Throwable) {
-                surfaceProvider?.let { preview?.setSurfaceProvider(it) }
-            }
-        } else {
-            surfaceProvider?.let { preview?.setSurfaceProvider(it) }
-        }
     }
 
     fun pause() {

@@ -1,3 +1,9 @@
+## 0.1.2
+
+* Fix black camera preview on device rotation when recording or switching orientation:
+  - Attach `surfaceProvider` to `Preview` after binding to lifecycle for reliable surface negotiation.
+  - Dynamically update `targetRotation` on `Preview` and `VideoCapture` in-place without resetting capture sessions.
+
 ## 0.1.1
 
 * Fix camera preview freezing or stopping after device rotation or resizing:
