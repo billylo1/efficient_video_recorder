@@ -153,6 +153,25 @@ void main() {
 
       controller.dispose();
     });
+
+    test('setTargetRotation invokes native method with optional rotation', () async {
+      final controller = EfficientVideoRecorderController();
+      await controller.initialize();
+      log.clear();
+
+      await controller.setTargetRotation(90);
+      expect(log.length, 1);
+      expect(log.first.method, 'setTargetRotation');
+      expect(log.first.arguments, {'rotation': 90});
+
+      log.clear();
+      await controller.setTargetRotation();
+      expect(log.length, 1);
+      expect(log.first.method, 'setTargetRotation');
+      expect(log.first.arguments, isEmpty);
+
+      controller.dispose();
+    });
   });
 
   group('EfficientVideoPreview', () {

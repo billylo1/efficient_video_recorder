@@ -84,9 +84,11 @@ class CameraXRecorderController(private val activity: Activity) {
         preview?.setSurfaceProvider(provider)
     }
 
-    fun detachSurfaceProvider() {
-        this.surfaceProvider = null
-        preview?.setSurfaceProvider(null)
+    fun detachSurfaceProvider(provider: Preview.SurfaceProvider? = null) {
+        if (provider == null || this.surfaceProvider === provider) {
+            this.surfaceProvider = null
+            preview?.setSurfaceProvider(null)
+        }
     }
 
     private fun bindUseCases() {
@@ -268,9 +270,19 @@ class CameraXRecorderController(private val activity: Activity) {
         }
     }
 
-    fun setTargetRotation(rotation: Int) {
-        preview?.targetRotation = rotation
-        videoCapture?.targetRotation = rotation
+    fun setTargetRotation(rotation: Int? = null) {
+        val rot = if (rotation != null && rotation >= 0) rotation else getSurfaceRotation()
+        preview?.targetRotation = rot
+        videoCapture?.targetRotation = rot
+        if (isInitialized && activeRecording == null) {
+            try {
+                bindUseCases()
+            } catch (_: Throwable) {
+                surfaceProvider?.let { preview?.setSurfaceProvider(it) }
+            }
+        } else {
+            surfaceProvider?.let { preview?.setSurfaceProvider(it) }
+        }
     }
 
     fun pause() {

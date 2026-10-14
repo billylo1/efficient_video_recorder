@@ -1,6 +1,6 @@
 name: efficient_video_recorder
-description: "High-efficiency camera video recorder for Flutter. Optimized for low battery usage and zero thermal throttling with CameraX SurfaceView on Android and AVFoundation on iOS."
-version: 0.1.0
+description: "High-efficiency camera video recorder for Flutter. Optimized for low battery usage and zero thermal throttling with CameraX on Android and AVFoundation on iOS."
+version: 0.1.1
 homepage: https://github.com/billylo1/efficient_video_recorder
 repository: https://github.com/billylo1/efficient_video_recorder
 issue_tracker: https://github.com/billylo1/efficient_video_recorder/issues

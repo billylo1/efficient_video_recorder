@@ -1,6 +1,8 @@
 package org.evergreenlabs.efficient_video_recorder
 
 import android.app.Activity
+import android.content.ComponentCallbacks2
+import android.content.res.Configuration
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -16,6 +18,15 @@ class EfficientVideoRecorderPlugin : FlutterPlugin, MethodChannel.MethodCallHand
 
     private var activity: Activity? = null
     private var controller: CameraXRecorderController? = null
+
+    private val componentCallbacks = object : ComponentCallbacks2 {
+        override fun onConfigurationChanged(newConfig: Configuration) {
+            controller?.setTargetRotation(null)
+        }
+        @Suppress("DEPRECATION")
+        override fun onLowMemory() {}
+        override fun onTrimMemory(level: Int) {}
+    }
 
     companion object {
         const val METHOD_CHANNEL = "org.evergreenlabs.efficient_video_recorder/methods"
@@ -48,17 +59,22 @@ class EfficientVideoRecorderPlugin : FlutterPlugin, MethodChannel.MethodCallHand
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity
         controller = CameraXRecorderController(binding.activity)
+        binding.activity.registerComponentCallbacks(componentCallbacks)
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
+        activity?.unregisterComponentCallbacks(componentCallbacks)
         activity = null
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
         activity = binding.activity
+        binding.activity.registerComponentCallbacks(componentCallbacks)
+        controller?.setTargetRotation(null)
     }
 
     override fun onDetachedFromActivity() {
+        activity?.unregisterComponentCallbacks(componentCallbacks)
         controller?.dispose()
         controller = null
         activity = null
@@ -95,7 +111,7 @@ class EfficientVideoRecorderPlugin : FlutterPlugin, MethodChannel.MethodCallHand
                 ctrl.setQuality(quality, result)
             }
             "setTargetRotation" -> {
-                val rotation = call.argument<Int>("rotation") ?: 0
+                val rotation = call.argument<Int>("rotation")
                 ctrl.setTargetRotation(rotation)
                 result.success(true)
             }

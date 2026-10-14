@@ -154,12 +154,13 @@ class EfficientVideoRecorderController extends ChangeNotifier {
     } catch (_) {}
   }
 
-  /// Inform the camera of orientation changes (0, 90, 180, 270).
-  Future<void> setTargetRotation(int rotation) async {
+  /// Inform the camera of orientation changes (0, 90, 180, 270), or omit/pass null
+  /// to automatically detect from the active display.
+  Future<void> setTargetRotation([int? rotation]) async {
     if (!_isInitialized) return;
     try {
       await _methodChannel.invokeMethod<bool>('setTargetRotation', {
-        'rotation': rotation,
+        if (rotation != null && rotation >= 0) 'rotation': rotation,
       });
     } catch (_) {}
   }

@@ -1,3 +1,11 @@
+## 0.1.1
+
+* Fix camera preview freezing or stopping after device rotation or resizing:
+  - Switched `PreviewView` to `ImplementationMode.COMPATIBLE` (`TextureView`) to prevent hardware surface drops on configuration changes.
+  - Guarded `detachSurfaceProvider` against race conditions during view recreation.
+  - Added automatic display rotation tracking via `ComponentCallbacks2` on Android.
+  - Made `setTargetRotation` auto-detect current display rotation and seamlessly re-bind/refresh preview surfaces when orientation changes.
+
 ## 0.1.0
 
 * Initial open source release of `efficient_video_recorder`.

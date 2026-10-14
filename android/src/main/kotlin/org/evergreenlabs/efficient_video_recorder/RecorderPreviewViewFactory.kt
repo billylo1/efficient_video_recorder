@@ -22,9 +22,10 @@ class RecorderPreviewPlatformView(
 ) : PlatformView {
 
     private val previewView: PreviewView = PreviewView(context).apply {
-        // PERFORMANCE mode uses SurfaceView for zero-copy hardware composer display,
-        // bypassing Flutter's GPU texture copy loop.
-        implementationMode = PreviewView.ImplementationMode.PERFORMANCE
+        // COMPATIBLE mode uses TextureView. Unlike SurfaceView, TextureView behaves like
+        // a standard Android View, seamlessly handling dynamic resizing, display rotation,
+        // animations, and parent clipping (ClipRRect) without dropping hardware buffers.
+        implementationMode = PreviewView.ImplementationMode.COMPATIBLE
         scaleType = PreviewView.ScaleType.FILL_CENTER
     }
 
@@ -37,6 +38,6 @@ class RecorderPreviewPlatformView(
     }
 
     override fun dispose() {
-        controllerProvider()?.detachSurfaceProvider()
+        controllerProvider()?.detachSurfaceProvider(previewView.surfaceProvider)
     }
 }

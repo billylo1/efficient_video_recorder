@@ -15,13 +15,17 @@ import kotlin.test.Test
 
 internal class EfficientVideoRecorderPluginTest {
     @Test
-    fun onMethodCall_getPlatformVersion_returnsExpectedValue() {
+    fun onMethodCall_withoutActivity_returnsError() {
         val plugin = EfficientVideoRecorderPlugin()
 
-        val call = MethodCall("getPlatformVersion", null)
+        val call = MethodCall("isInitialized", null)
         val mockResult: MethodChannel.Result = Mockito.mock(MethodChannel.Result::class.java)
         plugin.onMethodCall(call, mockResult)
 
-        Mockito.verify(mockResult).success("Android " + android.os.Build.VERSION.RELEASE)
+        Mockito.verify(mockResult).error(
+            Mockito.eq("NO_ACTIVITY"),
+            Mockito.anyString(),
+            Mockito.isNull()
+        )
     }
 }
